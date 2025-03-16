@@ -18,7 +18,7 @@ SCM (Smart Contact Manager) is a simple yet powerful contact management system b
 ## 🚀 Installation & Setup
 1️⃣ **Clone the Repository:**
 ```bash
-git clone https://github.com/yourusername/scm-smart-contact-manager.git
+git clone https://github.com/LakshayJain458/SCM.git
 cd scm-smart-contact-manager
 ```
 2️⃣ **Run the Project:**
