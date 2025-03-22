@@ -5,9 +5,9 @@
   <div
     class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4"
   >
-    <!-- brand -->
+    <!-- Brand Logo and Title -->
     <a
-      data-th-src="@{'/'}"
+      data-th-href="@{'/'}" 
       class="flex items-center space-x-3 rtl:space-x-reverse"
     >
       <img
@@ -21,18 +21,24 @@
       >
     </a>
 
-    <!-- end of brand logo -->
+    <!-- End of Brand Logo -->
     <div
       class="flex gap-2 md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse"
     >
-      <!-- dark light theme button -->
+      <!-- Dark/Light Theme Button -->
       <button
-  id="theme_change_button"
-  class="bg-gray-200 px-3 py-2 rounded-lg dark:bg-gray-600"
->
-  <img id="theme_icon" data-th-src="@{'/images/night-mode.png'}" alt="Theme Icon" class="w-6 h-6" />
-</button>
+        id="theme_change_button"
+        class="bg-gray-200 px-3 py-2 rounded-lg dark:bg-gray-600"
+      >
+        <img
+          id="theme_icon"
+          data-th-src="@{'/images/night-mode.png'}"
+          alt="Theme Icon"
+          class="w-6 h-6"
+        />
+      </button>
 
+      <!-- Login Button -->
       <a
         data-th-href="@{'/login'}"
         type="button"
@@ -40,6 +46,8 @@
       >
         Login
       </a>
+
+      <!-- Signup Button -->
       <a
         data-th-href="@{'/signup'}"
         type="button"
@@ -48,7 +56,7 @@
         Signup
       </a>
 
-      <!-- icons to open menu on small screen -->
+      <!-- Mobile Menu Toggle Button -->
       <button
         data-collapse-toggle="navbar-cta"
         type="button"
@@ -75,7 +83,7 @@
       </button>
     </div>
 
-    <!-- menus -->
+    <!-- Menus -->
     <div
       class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1"
       id="navbar-cta"
