@@ -26,36 +26,32 @@ public class PageController {
 
     @RequestMapping("/home")
     public String home() {
-        System.out.println("Home Page has been called");
         return "home";
     }
 
     @RequestMapping("/about")
     public String about() {
-        System.out.println("About Page has been called");
         return "about";
     }
 
     @RequestMapping("/services")
     public String service() {
-        System.out.println("Service Page has been called");
         return "services";
     }
 
     @GetMapping("/login")
-    public String login(Model model) {
-//        model.addAttribute("userForm", new UserForm());
+    public String login() {
         return "login";
     }
 
     @GetMapping("/signup")
-    public String signup(Model model,HttpSession session) {
+    public String signup(Model model) {
         model.addAttribute("userForm", new UserForm());
         return "signup";
     }
 
     @GetMapping("/contact")
-    public String contact(){
+    public String contact() {
         return "contact";
     }
 
@@ -74,11 +70,9 @@ public class PageController {
 
         try {
             userService.save(user);
-            System.out.println("User saved successfully!");
             Message message = Message.builder().content("Registration Successful").type(MessageType.green).build();
             session.setAttribute("message", message);
         } catch (Exception e) {
-            System.out.println("Error during registration: " + e.getMessage());
             Message message = Message.builder().content("Registration Unsuccessful , Try Again !").type(MessageType.red).build();
             session.setAttribute("message", message);
         }
