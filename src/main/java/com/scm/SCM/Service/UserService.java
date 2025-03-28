@@ -3,16 +3,12 @@ package com.scm.SCM.Service;
 import com.scm.SCM.helpers.AppConstants;
 import com.scm.SCM.model.User;
 import com.scm.SCM.repo.userRepo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class UserService {
@@ -50,7 +46,7 @@ public class UserService {
     }
 
     public boolean userExistsByEmail(String email) {
-        User dbuser=userRepo.findByEmail(email).orElse(null);
+        User dbuser = userRepo.findByEmail(email).orElse(null);
         return dbuser != null;
     }
 
@@ -59,9 +55,7 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + user.getUserId()));
 
         if (user.getUsername() != null) dbUser.setUsername(user.getUsername());
-//    if (user.getPassword() != null)
-//        dbUser.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
-        dbUser.setPassword(user.getPassword());
+        if (user.getPassword() != null) dbUser.setPassword(passwordEncoder.encode(user.getPassword()));
         if (user.getEmail() != null) dbUser.setEmail(user.getEmail());
         if (user.getProfilePicture() != null) dbUser.setProfilePicture(user.getProfilePicture());
         if (user.getAbout() != null) dbUser.setAbout(user.getAbout());
@@ -73,6 +67,10 @@ public class UserService {
         dbUser.setPhoneNumberVerified(user.isPhoneNumberVerified());
 
         return userRepo.save(dbUser);
+    }
+
+    public User getUserByEmail(String email) {
+         return userRepo.findByEmail(email).orElse(null);
     }
 
 

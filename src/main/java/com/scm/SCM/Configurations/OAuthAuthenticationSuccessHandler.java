@@ -7,8 +7,6 @@ import com.scm.SCM.repo.userRepo;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
@@ -23,8 +21,6 @@ import java.util.Objects;
 
 @Component
 public class OAuthAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
-
-    Logger logger = LoggerFactory.getLogger(OAuthAuthenticationSuccessHandler.class);
 
     @Autowired
     private userRepo userRepo;

@@ -1,0 +1,15 @@
+#toggle-container {
+  transition: opacity 0.3s ease;
+}
+
+.opacity-0 {
+  opacity: 0;
+}
+
+.pointer-events-none {
+  pointer-events: none;
+}
+
+#logo-sidebar {
+  z-index: 40;
+}

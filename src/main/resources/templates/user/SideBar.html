@@ -1,0 +1,113 @@
+<div data-th-fragment="sidebar">
+  <!-- Toggle Button (Hidden when sidebar is open) -->
+  <div
+    id="toggle-container"
+    class="fixed top-10 left-5 z-50 transition-opacity duration-300"
+  >
+    <button
+      id="sidebar-toggle"
+      class="p-2 rounded-lg bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl"
+      title="Toggle Sidebar"
+    >
+      <svg
+        class="w-6 h-6 text-gray-600 dark:text-gray-300"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M4 6h16M4 12h16M4 18h16"
+        />
+      </svg>
+    </button>
+  </div>
+
+  <!-- Expanded Sidebar -->
+  <aside
+  id="logo-sidebar"
+  class="fixed top-0 left-0 z-40 w-64 h-full bg-white dark:bg-gray-800 shadow-xl transform -translate-x-full transition-transform duration-300 ease-in-out"
+>
+    <div class="h-full px-4 py-6 overflow-y-auto">
+      <div class="flex items-center justify-between px-2 mb-8">
+        <span class="text-xl font-bold dark:text-white">SCM</span>
+        <button
+          id="close-sidebar"
+          class="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+          title="Close Sidebar"
+        >
+          <svg
+            class="w-5 h-5 text-gray-500 dark:text-gray-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+      </div>
+
+      <nav class="space-y-1">
+        <!-- Dashboard -->
+        <a
+          data-th-href="@{'/user/dashboard'}"
+          class="flex items-center p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 group transition-colors"
+        >
+          <svg
+            class="w-5 h-5 text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400"
+            ...
+          ></svg>
+          <span
+            class="ml-3 text-gray-700 dark:text-gray-200 group-hover:text-blue-600 dark:group-hover:text-blue-400"
+            >Dashboard</span
+          >
+        </a>
+
+        <!-- Profile -->
+        <a
+          data-th-href="@{'/user/profile'}"
+          class="flex items-center p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 group transition-colors"
+        >
+          <svg
+            class="w-5 h-5 text-gray-500 dark:text-gray-400 group-hover:text-green-600 dark:group-hover:text-green-400"
+            ...
+          ></svg>
+          <span
+            class="ml-3 text-gray-700 dark:text-gray-200 group-hover:text-green-600 dark:group-hover:text-green-400"
+            >Profile</span
+          >
+          <span
+            class="ml-auto px-2 py-1 text-xs font-medium text-green-800 bg-green-100 dark:bg-green-900 dark:text-green-200 rounded-full"
+            >Edit</span
+          >
+        </a>
+
+        <!-- Other menu items... -->
+
+        <!-- Sign Out -->
+        <a
+          data-th-href="@{'/logout'}"
+          class="flex items-center p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 group transition-colors mt-6 border-t border-gray-200 dark:border-gray-700"
+        >
+          <svg
+            class="w-5 h-5 text-gray-500 dark:text-gray-400 group-hover:text-red-600 dark:group-hover:text-red-400"
+            ...
+          ></svg>
+          <span
+            class="ml-3 text-gray-700 dark:text-gray-200 group-hover:text-red-600 dark:group-hover:text-red-400"
+            >Sign Out</span
+          >
+        </a>
+      </nav>
+    </div>
+  </aside>
+  <div id="sidebar-overlay" class="hidden fixed inset-0 z-30 bg-black/10 dark:bg-white/10 backdrop-blur-sm"></div>
+</div>
+</div>
