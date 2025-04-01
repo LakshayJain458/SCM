@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html
+  lang="en"
+  th:replace="~{base :: parent(~{::#content},~{::title},~{::script})}"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add New Contact</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .fade-in {
+        animation: fadeIn 0.3s ease-in;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .avatar-preview {
+        transition: all 0.3s ease;
+      }
+      /* Updated error message style */
+      .error-message {
+        margin-top: 0.25rem;
+      }
+    </style>
+  </head>
+  <body id="content" class="bg-gray-50 dark:bg-gray-900">
+    <!-- Toast Message -->
+    <div class="flex justify-center mt-2">
+      <div class="w-full flex items-center justify-center">
+        <div data-th-replace="~{message::messagesbox}"></div>
+      </div>
+    </div>
+
+    <div th:if="${LoggedInUser}" class="w-64 fixed left-0 top-10 h-full z-30">
+      <div data-th-replace="~{user/SideBar :: sidebar}"></div>
+    </div>
+
+    <!-- Contact Form Container -->
+    <div class="flex items-center justify-center min-h-screen">
+      <form
+        data-th-action="@{'/user/contact/saveContact'}"
+        data-th-object="${contactForm}"
+        method="post"
+        novalidate
+        enctype="multipart/form-data"
+        class="w-full max-w-2xl bg-white dark:bg-gray-800 shadow-xl rounded-xl px-8 pt-8 pb-10 mb-4 ml-0 lg:ml-64 transition-all duration-300"
+      >
+        <!-- Form Header -->
+        <div class="mb-8 text-center">
+          <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
+            Add New Contact
+          </h1>
+          <p class="mt-2 text-gray-600 dark:text-gray-300">
+            Store contact information securely and efficiently
+          </p>
+        </div>
+
+        <!-- Avatar Upload -->
+        <div class="mb-8 flex flex-col items-center">
+          <div class="relative group">
+            <div
+              class="w-32 h-32 rounded-full bg-gray-100 dark:bg-gray-700 overflow-hidden shadow-lg avatar-preview"
+            >
+              <svg
+                id="avatar-preview"
+                class="w-full h-full text-gray-400"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                  clip-rule="evenodd"
+                ></path>
+              </svg>
+              <div
+                class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+              >
+                <svg
+                  class="w-8 h-8 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                </svg>
+              </div>
+            </div>
+            <input
+              type="file"
+              data-th-field="*{picture}"
+              id="avatar-input"
+              class="hidden"
+              onchange="previewImage(event)"
+            />
+          </div>
+          <label
+            for="avatar-input"
+            class="mt-4 text-sm text-blue-600 dark:text-blue-400 cursor-pointer hover:underline"
+          >
+            Upload Profile Picture
+          </label>
+        </div>
+
+        <!-- Form Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Name Input -->
+          <div class="col-span-2">
+            <label
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
+              Full Name <span class="text-red-500">*</span>
+            </label>
+            <div class="relative">
+              <input
+                type="text"
+                data-th-field="*{ContactName}"
+                class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="John Doe"
+                required
+              />
+              <div
+                data-th-if="${#fields.hasErrors('ContactName')}"
+                class="error-message fade-in text-sm text-red-600 dark:text-red-400 flex items-center"
+                role="alert"
+                aria-live="polite"
+              >
+                <svg
+                  class="w-4 h-4 mr-1"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+                <span data-th-errors="*{ContactName}" class="text-sm"></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Email Input -->
+          <div>
+            <label
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
+              Email <span class="text-red-500">*</span>
+            </label>
+            <div class="relative">
+              <input
+                type="email"
+                data-th-field="*{ContactEmail}"
+                class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="john@example.com"
+                required
+              />
+              <div
+                data-th-if="${#fields.hasErrors('ContactEmail')}"
+                class="error-message fade-in text-sm text-red-600 dark:text-red-400 flex items-center"
+                role="alert"
+                aria-live="polite"
+              >
+                <svg
+                  class="w-4 h-4 mr-1"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+                <span data-th-errors="*{ContactEmail}" class="text-sm"></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Phone Input -->
+          <div>
+            <label
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
+              Phone <span class="text-red-500">*</span>
+            </label>
+            <div class="relative">
+              <input
+                type="tel"
+                data-th-field="*{ContactPhone}"
+                class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="+1 555-555-5555"
+                required
+              />
+              <div
+                data-th-if="${#fields.hasErrors('ContactPhone')}"
+                class="error-message fade-in text-sm text-red-600 dark:text-red-400 flex items-center"
+                role="alert"
+                aria-live="polite"
+              >
+                <svg
+                  class="w-4 h-4 mr-1"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+                <span data-th-errors="*{ContactPhone}" class="text-sm"></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Address Input -->
+          <div class="col-span-2">
+            <label
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
+              Address
+            </label>
+            <div class="relative">
+              <textarea
+                data-th-field="*{ContactAddress}"
+                rows="3"
+                class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="11 Main St, City, Country"
+              ></textarea>
+              <div
+                data-th-if="${#fields.hasErrors('ContactAddress')}"
+                class="error-message fade-in text-sm text-red-600 dark:text-red-400 flex items-center"
+                role="alert"
+                aria-live="polite"
+              >
+                <svg
+                  class="w-4 h-4 mr-1"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+                <span data-th-errors="*{ContactAddress}" class="text-sm"></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Social Links -->
+          <div class="col-span-2">
+            <label
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
+              Social Profiles
+            </label>
+            <div id="social-container" class="space-y-3">
+              <!-- Existing social handles -->
+              <div data-th-each="link, stat : *{links}" class="flex gap-3">
+                <select
+                  title="Select platform"
+                  data-th-field="*{links[__${stat.index}__].handle}"
+                  class="w-1/3 px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                >
+                  <option value="">Select platform</option>
+                  <option
+                    value="github"
+                    data-th-selected="${link.handle == 'github'}"
+                  >
+                    GitHub
+                  </option>
+                  <option
+                    value="linkedin"
+                    data-th-selected="${link.handle == 'linkedin'}"
+                  >
+                    LinkedIn
+                  </option>
+                  <option
+                    value="twitter"
+                    data-th-selected="${link.handle == 'twitter'}"
+                  >
+                    Twitter
+                  </option>
+                  <option
+                    value="other"
+                    data-th-selected="${link.handle == 'other'}"
+                  >
+                    Other
+                  </option>
+                </select>
+                <input
+                  type="url"
+                  data-th-field="*{links[__${stat.index}__].handleLink}"
+                  class="flex-1 px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                  placeholder="https://"
+                />
+                <button
+                  type="button"
+                  onclick="removeSocialField(this)"
+                  class="px-3 rounded-lg bg-red-100 dark:bg-gray-700 hover:bg-red-200 dark:hover:bg-gray-600"
+                >
+                  ×
+                </button>
+              </div>
+              <!-- New social handles will be added here -->
+            </div>
+            <!-- Add new social handle button -->
+            <button
+              type="button"
+              onclick="addSocialField()"
+              class="mt-2 px-4 py-2 text-sm text-white bg-blue-600 rounded-lg hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
+            >
+              Add Social Profile
+            </button>
+          </div>
+
+          <!-- Notes Input -->
+          <div class="col-span-2">
+            <label
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
+              Notes
+            </label>
+            <textarea
+              data-th-field="*{description}"
+              rows="4"
+              class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Additional information about the contact..."
+              th:attr="aria-invalid=${#fields.hasErrors('description') ? 'true' : 'false'}"
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="flex items-center mt-4">
+          <input
+            data-th-field="*{favorite}"
+            id="link-checkbox"
+            type="checkbox"
+            value=""
+            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+          />
+          <label
+            for="link-checkbox"
+            class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+          >
+            Is this contact your favorite?
+          </label>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="mt-8 flex justify-end gap-4">
+          <button
+            type="button"
+            onclick="window.history.back()"
+            class="px-6 py-2.5 text-gray-700 bg-gray-100 dark:bg-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="px-6 py-2.5 text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 transition-colors"
+          >
+            Save Contact
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <script>
+      // Image Preview Function
+      function previewImage(event) {
+        const input = event.target;
+        const preview = document.getElementById("avatar-preview");
+        if (input.files && input.files[0]) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            // Create an image element to replace the SVG
+            const img = document.createElement("img");
+            img.src = e.target.result;
+            img.className = "w-full h-full object-cover";
+            preview.parentNode.replaceChild(img, preview);
+            img.id = "avatar-preview";
+          };
+          reader.readAsDataURL(input.files[0]);
+        }
+      }
+      // Track the index for new social handles
+      let socialIndex = document.querySelectorAll(
+        '[id^="social-container"] .flex.gap-3'
+      ).length;
+
+      function addSocialField() {
+        const container = document.getElementById("social-container");
+
+        const newField = document.createElement("div");
+        newField.className = "flex gap-3";
+        newField.innerHTML = `
+          <select
+            name="links[${socialIndex}].handle"
+            class="w-1/3 px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+          >
+            <option value="">Select platform</option>
+            <option value="github">GitHub</option>
+            <option value="linkedin">LinkedIn</option>
+            <option value="twitter">Twitter</option>
+            <option value="other">Other</option>
+          </select>
+          <input
+            type="url"
+            name="links[${socialIndex}].handleLink"
+            class="flex-1 px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+            placeholder="https://"
+          />
+          <button
+            type="button"
+            onclick="removeSocialField(this)"
+            class="px-3 rounded-lg bg-red-100 dark:bg-gray-700 hover:bg-red-200 dark:hover:bg-gray-600"
+          >
+            ×
+          </button>
+        `;
+
+        container.appendChild(newField);
+        socialIndex++;
+      }
+
+      function removeSocialField(button) {
+        const fieldContainer = button.closest(".flex.gap-3");
+        if (fieldContainer) {
+          // Update indices of remaining fields
+          const remainingFields = Array.from(
+            fieldContainer.parentNode.children
+          ).filter((child) => child.classList.contains("flex"));
+
+          remainingFields.forEach((field, index) => {
+            field.querySelector("select").name = `links[${index}].handle`;
+            field.querySelector("input").name = `links[${index}].handleLink`;
+          });
+
+          socialIndex = remainingFields.length;
+          fieldContainer.remove();
+        }
+      }
+      document.addEventListener("DOMContentLoaded", function () {
+        const errorMessages = document.querySelectorAll(".error-message");
+        errorMessages.forEach((error) => {
+          if (error.textContent.trim() !== "") {
+            error.classList.add("show");
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

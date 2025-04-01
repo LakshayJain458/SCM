@@ -18,4 +18,9 @@ public class UserController {
     public String userProfile(Model model){
         return "user/Profile";
     }
+
+    @GetMapping("/contact")
+    public String contact() {
+        return "user/contact";
+    }
 }

@@ -18,12 +18,14 @@ import java.util.List;
 @Setter
 public class Contacts {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     private String ContactName;
     private String ContactEmail;
     private String ContactPhone;
     private String ContactAddress;
     private String picture;
+    private String ImagePublicId;
     private boolean favorite = false;
 
     @Column(length = 1000)

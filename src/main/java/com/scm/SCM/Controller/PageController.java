@@ -50,9 +50,9 @@ public class PageController {
         return "signup";
     }
 
-    @GetMapping("/contact")
+    @GetMapping("/contactMe")
     public String contact() {
-        return "contact";
+        return "ContactMe";
     }
 
     @PostMapping(value = "/register")

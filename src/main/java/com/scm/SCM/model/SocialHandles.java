@@ -20,5 +20,6 @@ public class SocialHandles {
     private String handleLink;
 
     @ManyToOne
+    @JoinColumn(name = "contact_id", nullable = false)
     private Contacts contact;
 }

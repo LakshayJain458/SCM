@@ -6,9 +6,40 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Service page</title>
+    <title>Services Page</title>
   </head>
   <body>
-    <h1 id="content">This is service page.</h1>
+    <div id="content">
+      <!-- Main Layout Container -->
+      <div class="flex min-h-screen">
+        <!-- Fixed Sidebar -->
+        <div th:if="${LoggedInUser}" class="w-64 fixed left-0 top-10 h-full z-30">
+          <div data-th-replace="~{user/SideBar :: sidebar}"></div>
+        </div>
+        <!-- Main Content Area -->
+        <div class="flex-1 ml-64 p-8 transition-all duration-300">
+          <h1 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-100">
+            Our Services
+          </h1>
+          <p class="text-gray-600 dark:text-gray-300 leading-relaxed">
+            Welcome to our services page. Here, you can find details about the range of services we offer. Our team is dedicated to delivering top-quality service and innovative solutions tailored to your needs.
+          </p>
+          <!-- Add more service-specific content below -->
+          <div class="mt-8">
+            <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100">Service One</h2>
+            <p class="mt-2 text-gray-600 dark:text-gray-300">
+              Detailed information about Service One goes here.
+            </p>
+          </div>
+          <div class="mt-8">
+            <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100">Service Two</h2>
+            <p class="mt-2 text-gray-600 dark:text-gray-300">
+              Detailed information about Service Two goes here.
+            </p>
+          </div>
+          <!-- You can add additional sections as needed -->
+        </div>
+      </div>
+    </div>
   </body>
 </html>

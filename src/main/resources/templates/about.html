@@ -6,9 +6,109 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>About page</title>
+    <title>About Project</title>
   </head>
   <body>
-    <h1 id="content">This is about page.</h1>
+    <div id="content">
+      <!-- Main Layout Container -->
+      <div class="flex min-h-screen">
+        <!-- Fixed Sidebar -->
+        <div th:if="${LoggedInUser}" class="w-64 fixed left-0 top-10 h-full z-30">
+          <div data-th-replace="~{user/SideBar :: sidebar}"></div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="flex-1 ml-64 p-8 transition-all duration-300">
+          <div class="max-w-4xl mx-auto">
+            <h1 class="text-3xl font-bold mb-8 text-gray-800 dark:text-gray-100">
+              🚀 Project Overview
+            </h1>
+            
+            <div class="space-y-8">
+              <!-- Project Summary -->
+              <div class="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl">
+                <h2 class="text-2xl font-semibold mb-6 text-gray-800 dark:text-gray-100">
+                  📌 Project Details
+                </h2>
+                <dl class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div class="space-y-2">
+                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Project Name</dt>
+                    <dd class="text-gray-800 dark:text-gray-200 font-medium">Supply Chain Management System</dd>
+                  </div>
+                  <div class="space-y-2">
+                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Version</dt>
+                    <dd class="text-gray-800 dark:text-gray-200 font-medium">2.1.0</dd>
+                  </div>
+                  <div class="space-y-2">
+                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Development Period</dt>
+                    <dd class="text-gray-800 dark:text-gray-200 font-medium">Jan 2023 - Present</dd>
+                  </div>
+                  <div class="space-y-2">
+                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Project Type</dt>
+                    <dd class="text-gray-800 dark:text-gray-200 font-medium">Enterprise Web Application</dd>
+                  </div>
+                </dl>
+              </div>
+
+              <!-- Key Features -->
+              <div class="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl">
+                <h2 class="text-2xl font-semibold mb-6 text-gray-800 dark:text-gray-100">
+                  🔑 Key Features
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div class="flex items-start space-x-4">
+                    <div class="flex-shrink-0 w-8 h-8 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center">
+                      <span class="text-blue-600 dark:text-blue-300">✔</span>
+                    </div>
+                    <div>
+                      <h3 class="font-medium text-gray-800 dark:text-gray-100 mb-1">Real-time Inventory Tracking</h3>
+                      <p class="text-gray-600 dark:text-gray-400 text-sm">Multi-warehouse management with live stock updates</p>
+                    </div>
+                  </div>
+                  <!-- Add more features -->
+                </div>
+              </div>
+
+              <!-- Technology Stack -->
+              <div class="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl">
+                <h2 class="text-2xl font-semibold mb-6 text-gray-800 dark:text-gray-100">
+                  💻 Technology Stack
+                </h2>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div class="flex items-center space-x-2 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                    <img src="/icons/java.svg" alt="Java" class="h-6 w-6">
+                    <span class="text-gray-700 dark:text-gray-300">Java 17</span>
+                  </div>
+                  <div class="flex items-center space-x-2 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                    <img src="/icons/spring.svg" alt="Spring" class="h-6 w-6">
+                    <span class="text-gray-700 dark:text-gray-300">Spring Boot 3</span>
+                  </div>
+                  <!-- Add more technologies -->
+                </div>
+              </div>
+
+              <!-- Project Team -->
+              <div class="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl">
+                <h2 class="text-2xl font-semibold mb-6 text-gray-800 dark:text-gray-100">
+                  👥 Development Team
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div class="flex items-center space-x-4">
+                    <div class="flex-shrink-0">
+                      <img src="/avatars/lakshay.jpg" alt="Lakshay Jain" class="h-12 w-12 rounded-full">
+                    </div>
+                    <div>
+                      <h3 class="font-medium text-gray-800 dark:text-gray-100">Lakshay Jain</h3>
+                      <p class="text-sm text-gray-600 dark:text-gray-400">Lead Developer & Architect</p>
+                    </div>
+                  </div>
+                  <!-- Add team members -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </body>
 </html>
