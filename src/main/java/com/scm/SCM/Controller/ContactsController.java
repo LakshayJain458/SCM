@@ -4,6 +4,8 @@ import com.scm.SCM.Service.ContactService;
 import com.scm.SCM.Service.ImageService;
 import com.scm.SCM.Service.UserService;
 import com.scm.SCM.forms.ContactForm;
+import com.scm.SCM.forms.searchContactForm;
+import com.scm.SCM.helpers.AppConstants;
 import com.scm.SCM.helpers.Message;
 import com.scm.SCM.helpers.MessageType;
 import com.scm.SCM.helpers.UserHelper;
@@ -12,21 +14,18 @@ import com.scm.SCM.model.SocialHandles;
 import com.scm.SCM.model.User;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import org.hibernate.boot.model.source.internal.hbm.Helper;
-import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Controller
@@ -96,8 +95,41 @@ public class ContactsController {
     }
 
     @GetMapping("/viewContact")
-    public String viewContacts(Model model) {
+    public String viewContacts(@RequestParam(value = "page", defaultValue = "0") int page,
+                               @RequestParam(value = "size", defaultValue = AppConstants.PAGE_SIZE + "") int size,
+                               @RequestParam(value = "sortBy", defaultValue = "id") String sortBy,
+                               @RequestParam(value = "sortDirection", defaultValue = "asc") String sortDirection,
+                               Authentication authentication, Model model) {
+        String username = UserHelper.getLoggedInUserEmail(authentication);
+        User user = userService.getUserByEmail(username);
+        Page<Contacts> PageContacts = contactService.getByUser(user, page, size, sortBy, sortDirection);
+        model.addAttribute("PageContacts", PageContacts);
+        model.addAttribute("searchContactForm", new searchContactForm());
+        model.addAttribute("PageSize", AppConstants.PAGE_SIZE);
         return "user/contact";
+    }
+
+    @GetMapping("/search")
+    public String searchContact(
+            @ModelAttribute searchContactForm searchContactForm,
+            @RequestParam(value = "size", defaultValue = AppConstants.PAGE_SIZE + "") int size,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "sortBy", defaultValue = "id") String sortBy,
+            @RequestParam(value = "direction", defaultValue = "asc") String direction,
+            Model model, Authentication authentication) {
+        var user = userService.getUserByEmail(UserHelper.getLoggedInUserEmail(authentication));
+        Page<Contacts> pageContact = null;
+        if (searchContactForm.getField().equalsIgnoreCase("name")) {
+            pageContact = contactService.searchByName(searchContactForm.getValue(), page, size, sortBy, direction, user);
+        } else if (searchContactForm.getField().equalsIgnoreCase("email")) {
+            pageContact = contactService.searchByEmail(searchContactForm.getValue(), page, size, sortBy, direction, user);
+        } else if (searchContactForm.getField().equalsIgnoreCase("phone")) {
+            pageContact = contactService.searchByPhone(searchContactForm.getValue(), page, size, sortBy, direction, user);
+        }
+        model.addAttribute("searchContactForm",searchContactForm);
+        model.addAttribute("PageContacts", pageContact);
+        model.addAttribute("PageSize", AppConstants.PAGE_SIZE);
+        return "user/search";
     }
 
 }

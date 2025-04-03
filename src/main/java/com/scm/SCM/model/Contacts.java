@@ -20,9 +20,14 @@ public class Contacts {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
-    private String ContactName;
-    private String ContactEmail;
-    private String ContactPhone;
+    @Column(name = "contact_name")
+    private String contactName;
+
+    @Column(name = "contact_email")
+    private String contactEmail;
+
+    @Column(name = "contact_phone")
+    private String contactPhone;
     private String ContactAddress;
     private String picture;
     private String ImagePublicId;
