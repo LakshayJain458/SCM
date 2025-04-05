@@ -10,14 +10,14 @@
 <body>
     <div id="content">
         <!-- Main Layout Container -->
-        <div class="flex min-h-screen">
+        <div class="flex flex-col items-center min-h-screen">
             <!-- Fixed Sidebar -->
             <div th:if="${LoggedInUser}" class="w-64 fixed left-0 top-10 h-full z-30">
                 <div data-th-replace="~{user/SideBar :: sidebar}"></div>
             </div>
 
             <!-- Main Content Area -->
-            <div class="flex-1 ml-64 p-0 transition-all duration-300 text-center">
+            <div class="w-full pl-32 pt-6 pr-24 transition-all duration-300 text-center">
                 <h1 class="text-4xl font-bold mb-2 text-gray-800 dark:text-gray-100">
                     Search Results
                 </h1>
@@ -75,7 +75,8 @@
                         </div>
                     </div>
 
-                    <table data-th-if="${PageContacts.totalElements>0}" class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                    <table data-th-if="${PageContacts.totalElements>0}"
+                        class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
                                 <th scope="col" class="px-6 py-3">Name</th>
@@ -143,23 +144,160 @@
                                     <div class="flex items-center space-x-3">
                                         <!-- Favorite Star -->
                                         <i data-th-classappend="*{favorite} ? 'fas text-yellow-400' : 'far'"
-                                            class="fa-star hover:text-yellow-500 transition-colors cursor-pointer"
-                                            data-th-attr="data-favorite=${c.favorite}"
+                                            class="fa-solid fa-heart" data-th-attr="data-favorite=${c.favorite}"
                                             onclick="event.stopPropagation()"></i>
+
 
                                         <!-- Edit Icon -->
                                         <a data-th-href="@{/contacts/edit/{id}(id=*{id})}"
-                                            class="hover:text-blue-700 transition-colors"
+                                            class="hover:text-blue-600 transition-colors"
                                             onclick="event.stopPropagation()">
-                                            <i class="fas fa-edit text-blue-600"></i>
+                                            <i class="fa-solid fa-pen-to-square"></i>
                                         </a>
 
                                         <!-- Delete Icon -->
                                         <a data-th-href="@{/contacts/delete/{id}(id=*{id})}"
                                             class="hover:text-red-700 transition-colors"
                                             onclick="event.stopPropagation()">
-                                            <i class="fas fa-trash text-red-600"></i>
+                                            <i class="fa-solid fa-trash"></i>
                                         </a>
+
+                                        <!-- View Icon Button -->
+                                        <button
+                                            data-th-attr="data-modal-target='modal-' + *{id}, data-modal-toggle='modal-' + *{id}"
+                                            title="View Contact Details" class="transition-colors duration-200">
+                                            <i class="fa-solid fa-eye"></i>
+                                        </button>
+
+                                        <!-- Modal -->
+                                        <div data-th-id="'modal-' + *{id}" tabindex="-1" aria-hidden="true"
+                                            class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50 backdrop-blur-sm transition-opacity">
+
+                                            <!-- Modal Container -->
+                                            <div
+                                                class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-lg w-full max-w-3xl max-h-[90vh] overflow-y-auto animate-fade-in-up">
+
+                                                <!-- Modal Header -->
+                                                <div
+                                                    class="flex items-center justify-between p-6 border-b dark:border-gray-700">
+                                                    <h3
+                                                        class="text-2xl font-bold text-gray-800 dark:text-white flex items-center gap-3">
+                                                        <img onerror="this.src='https://static-00.iconduck.com/assets.00/profile-default-icon-2048x2045-u3j7s5nj.png'"
+                                                            data-th-src="@{*{picture}}"
+                                                            class="w-12 h-12 rounded-full object-cover"
+                                                            alt="Contact photo">
+                                                        <span data-th-text="*{ContactName}"></span>
+                                                    </h3>
+                                                    <button type="button"
+                                                        data-th-attr="data-modal-hide='modal-' + *{id}"
+                                                        class="text-gray-500 hover:text-red-600 rounded-full p-1 transition-colors">
+                                                        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none"
+                                                            stroke="currentColor" stroke-width="2">
+                                                            <line x1="18" y1="6" x2="6" y2="18" />
+                                                            <line x1="6" y1="6" x2="18" y2="18" />
+                                                        </svg>
+                                                        <span class="sr-only">Close modal</span>
+                                                    </button>
+                                                </div>
+
+                                                <!-- Modal Body -->
+                                                <div class="p-6 space-y-6">
+                                                    <!-- Contact Info Grid -->
+                                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                        <!-- Basic Information -->
+                                                        <div class="space-y-4">
+                                                            <div class="flex items-center gap-3">
+                                                                <i
+                                                                    class="fas fa-envelope text-gray-500 dark:text-gray-400 w-5"></i>
+                                                                <div>
+                                                                    <p
+                                                                        class="text-sm text-gray-500 dark:text-gray-400 mb-1">
+                                                                        Email</p>
+                                                                    <p class="text-gray-800 dark:text-gray-200"
+                                                                        data-th-text="*{ContactEmail}"></p>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="flex items-center gap-3">
+                                                                <i
+                                                                    class="fas fa-phone-alt text-gray-500 dark:text-gray-400 w-5"></i>
+                                                                <div>
+                                                                    <p
+                                                                        class="text-sm text-gray-500 dark:text-gray-400 mb-1">
+                                                                        Phone</p>
+                                                                    <p class="text-gray-800 dark:text-gray-200"
+                                                                        data-th-text="*{ContactPhone}"></p>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="flex items-center gap-3">
+                                                                <i
+                                                                    class="fas fa-map-marker-alt text-gray-500 dark:text-gray-400 w-5"></i>
+                                                                <div>
+                                                                    <p
+                                                                        class="text-sm text-gray-500 dark:text-gray-400 mb-1">
+                                                                        Address</p>
+                                                                    <p class="text-gray-800 dark:text-gray-200"
+                                                                        data-th-text="*{ContactAddress}"></p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- Social Links & Description -->
+                                                        <div class="space-y-6">
+                                                            <div>
+                                                                <h4
+                                                                    class="text-sm font-semibold text-gray-500 dark:text-gray-400 mb-3">
+                                                                    SOCIAL LINKS
+                                                                </h4>
+                                                                <div class="flex flex-wrap gap-3">
+                                                                    <div data-th-each="link : *{links}">
+                                                                        <a data-th-href="${link.handleLink}"
+                                                                            target="_blank"
+                                                                            class="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+                                                                            <i data-th-switch="${link.handle}"
+                                                                                class="text-lg">
+                                                                                <i data-th-case="'facebook'"
+                                                                                    class="fab fa-facebook text-blue-600"></i>
+                                                                                <i data-th-case="'instagram'"
+                                                                                    class="fab fa-instagram text-pink-500"></i>
+                                                                                <i data-th-case="'twitter'"
+                                                                                    class="fab fa-twitter text-blue-400"></i>
+                                                                                <i data-th-case="'linkedin'"
+                                                                                    class="fab fa-linkedin text-blue-700"></i>
+                                                                                <i data-th-case="*"
+                                                                                    class="fas fa-link text-gray-500"></i>
+                                                                            </i>
+                                                                            <span class="text-sm"
+                                                                                data-th-text="${link.handle}"></span>
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div>
+                                                                <h4
+                                                                    class="text-sm font-semibold text-gray-500 dark:text-gray-400 mb-3">
+                                                                    ABOUT</h4>
+                                                                <p class="text-gray-800 dark:text-gray-300 leading-relaxed"
+                                                                    data-th-text="*{description ?: 'No description available'}">
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Modal Footer -->
+                                                <div
+                                                    class="flex justify-end items-center gap-3 p-6 border-t dark:border-gray-700">
+                                                    <button data-th-attr="data-modal-hide='modal-' + *{id}"
+                                                        type="button"
+                                                        class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition font-medium">
+                                                        Close Details
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </td>
                             </tr>
@@ -171,7 +309,7 @@
 
                                 <!-- Previous Button (Only visible if not on the first page) -->
                                 <li data-th-if="${!PageContacts.first}">
-                                    <a data-th-href="@{'/user/contact/viewContact?size='+${PageSize}+'&page=' + ${PageContacts.number - 1}+'&page=' + ${PageContacts.number - 1}+'&field='+${searchContactForm.field}+'&value='+${searchContactForm.value}}"
+                                    <a data-th-href="@{'/user/contact/viewContact?size='+${PageSize}+'&page=' + ${PageContacts.number - 1}+'&field='+${searchContactForm.field}+'&value='+${searchContactForm.value}}"
                                         class="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
                                         Previous
                                     </a>
@@ -179,7 +317,7 @@
 
                                 <!-- Page Number Buttons -->
                                 <li data-th-each="i : ${#numbers.sequence(0, PageContacts.totalPages - 1)}">
-                                    <a data-th-href="@{'/user/contact/viewContact?size='+${PageSize}+'&page=' + ${i}+'&page=' + ${i}+'&field='+${searchContactForm.field}+'&value='+${searchContactForm.value}}"
+                                    <a data-th-href="@{'/user/contact/viewContact?size='+${PageSize}+'&page=' + ${PageContacts.number + 1}+'&field='+${searchContactForm.field}+'&value='+${searchContactForm.value}}"
                                         class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
                                         data-th-classappend="${i == PageContacts.number ? ' bg-blue-500 text-white dark:bg-gray-600' : ' bg-white dark:bg-gray-800'}">
                                         <span data-th-text="${i + 1}"></span>
@@ -188,7 +326,7 @@
 
                                 <!-- Next Button (Only visible if not on the last page) -->
                                 <li data-th-if="${!PageContacts.last}">
-                                    <a data-th-href="@{'/user/contact/viewContact?size='+${PageSize}+'&page=' + ${PageContacts.number + 1}+'&page=' + ${PageContacts.number + 1}+'&field='+${searchContactForm.field}+'&value='+${searchContactForm.value}}"
+                                    <a data-th-href="@{'/user/contact/viewContact?size='+${PageSize}+'&page=' + ${PageContacts.number + 1}+'&field='+${searchContactForm.field}+'&value='+${searchContactForm.value}}"
                                         class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
                                         Next
                                     </a>

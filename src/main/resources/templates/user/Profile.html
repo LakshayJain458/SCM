@@ -11,14 +11,14 @@
   <body>
     <div id="content">
       <!-- Main Layout Container -->
-      <div class="flex min-h-screen">
+      <div class="flex flex-col items-center min-h-screen">
         <!-- Fixed Sidebar -->
         <div th:if="${LoggedInUser}" class="w-64 fixed left-0 top-10 h-full z-30">
           <div data-th-replace="~{user/SideBar :: sidebar}"></div>
         </div>
 
         <!-- Main Content Area -->
-        <div class="flex-1 ml-64 p-8 transition-all duration-300">
+        <div class="w-full pl-32 pt-6 pr-24 transition-all duration-300">
           <h1 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-100">
             Welcome to Profile page
           </h1>

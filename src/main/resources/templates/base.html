@@ -1,48 +1,42 @@
 <!DOCTYPE html>
-<html
-  class="light"
-  lang="en"
-  th:fragment="parent(content,title,script)"
-  xmlns:th="http://www.thymeleaf.org"
->
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title data-th-replace="${title}">SCM</title>
+<html class="light" lang="en" th:fragment="parent(content,title,script)" xmlns:th="http://www.thymeleaf.org">
 
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" data-th-href="@{'/css/output.css'}" />
-    <link rel="stylesheet" data-th-href="@{'/css/style.css'}" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title data-th-replace="${title}">SCM</title>
 
-  </head>
-  <body class="flex flex-col min-h-screen dark:bg-gray-900 bg-gray-100 dark:text-white">
-    <!-- commona header -->
-    <!--  user is logged in : navbar -->
-    <div th:if="${LoggedInUser}">
-      <div data-th-replace="~{user/UserLoggedInNavbar::Usernavbar}"></div>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet" />
+  <link rel="stylesheet" data-th-href="@{'/css/output.css'}" />
+  <link rel="stylesheet" data-th-href="@{'/css/style.css'}" />
+
+</head>
+
+<body class="flex flex-col min-h-screen dark:bg-gray-900 bg-gray-100 dark:text-white">
+  <!-- Common header -->
+  <div th:if="${LoggedInUser}">
+    <div data-th-replace="~{user/UserLoggedInNavbar::Usernavbar}"></div>
+  </div>
+
+  <div th:unless="${LoggedInUser}">
+    <div data-th-replace="~{navbar :: navbar}"></div>
+  </div>
+
+  <!-- Main content container -->
+  <main class="flex-grow flex items-center justify-center"> <!-- Added centering -->
+    <div class="container mx-auto px-4 max-w-7xl"> <!-- Centered container with max width -->
+      <section data-th-replace="${content}" class="w-full"></section>
     </div>
+  </main>
 
-    <!-- user is not logged : navbar -->
-    <div th:unless="${LoggedInUser}">
-      <div data-th-replace="~{navbar :: navbar}"></div>
-    </div>
+  <!-- Common footer -->
+  <div data-th-replace="~{footer :: footer}"></div>
 
-    <!-- main content -->
-    <main class="flex-grow">  <!-- Added flex-grow and padding-top -->
-      <div class="container mx-auto px-4">
-        <section data-th-replace="${content}"></section>
-      </div>
-    </main>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script data-th-src="@{'/js/theme.js'}"></script>
+  <script data-th-src="@{'/js/sidebar.js'}"></script>
+  <script data-th-src="@{'/js/contact.js'}"></script>
+</body>
 
-    <!-- common footer -->
-     <div data-th-replace="~{footer :: footer}"></div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
-    <!-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> -->
-    <script data-th-src="@{'/js/theme.js'}"></script>
-    <script data-th-src="@{'/js/sidebar.js'}"></script>
-    <!-- <th:block data-th-replace="${script}"></th:block> -->
-  </body>
 </html>

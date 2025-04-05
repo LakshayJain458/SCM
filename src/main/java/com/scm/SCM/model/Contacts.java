@@ -42,5 +42,10 @@ public class Contacts {
 
     @OneToMany(mappedBy = "contact", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<SocialHandles> links = new ArrayList<>();
+    public void setLinks(List<SocialHandles> links) {
+        this.links.clear();
+        this.links.addAll(links);
+        links.forEach(link -> link.setContact(this));
+    }
 
 }

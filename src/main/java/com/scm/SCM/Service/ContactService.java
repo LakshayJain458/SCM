@@ -1,15 +1,16 @@
 package com.scm.SCM.Service;
 
 import com.scm.SCM.model.Contacts;
+import com.scm.SCM.model.SocialHandles;
 import com.scm.SCM.model.User;
 import com.scm.SCM.repo.ContactRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,7 +24,31 @@ public class ContactService {
     }
 
     public void update(Contacts contacts) {
-        contactRepo.save(contacts);
+        var oldContact = contactRepo.findById(contacts.getId()).orElseThrow();
+        oldContact.setUser(contacts.getUser());
+        oldContact.setContactName(contacts.getContactName());
+        oldContact.setContactEmail(contacts.getContactEmail());
+        oldContact.setContactPhone(contacts.getContactPhone());
+        oldContact.setContactAddress(contacts.getContactAddress());
+        oldContact.setFavorite(contacts.isFavorite());
+        oldContact.setDescription(contacts.getDescription());
+        oldContact.setPicture(contacts.getPicture());
+        oldContact.setImagePublicId(contacts.getImagePublicId());
+        List<SocialHandles> newLinks = contacts.getLinks();
+        if (newLinks != null) {
+            oldContact.getLinks().clear();
+            for (SocialHandles handle : newLinks) {
+                SocialHandles newHandle = new SocialHandles();
+                newHandle.setHandle(handle.getHandle());
+                newHandle.setHandleLink(handle.getHandleLink());
+                newHandle.setContact(oldContact);
+                oldContact.getLinks().add(newHandle);
+            }
+        } else {
+            oldContact.getLinks().clear();
+        }
+
+        contactRepo.save(oldContact);
     }
 
     public List<Contacts> getAllContacts() {

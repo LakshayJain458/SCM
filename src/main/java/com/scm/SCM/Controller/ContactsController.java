@@ -18,15 +18,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.security.Principal;
+import java.util.*;
 
 @Controller
 @RequestMapping("/user/contact")
@@ -126,10 +127,88 @@ public class ContactsController {
         } else if (searchContactForm.getField().equalsIgnoreCase("phone")) {
             pageContact = contactService.searchByPhone(searchContactForm.getValue(), page, size, sortBy, direction, user);
         }
-        model.addAttribute("searchContactForm",searchContactForm);
+        model.addAttribute("searchContactForm", searchContactForm);
         model.addAttribute("PageContacts", pageContact);
         model.addAttribute("PageSize", AppConstants.PAGE_SIZE);
         return "user/search";
+    }
+
+    @DeleteMapping("/delete/{id}")
+    @ResponseBody
+    public ResponseEntity<Map<String, String>> deleteContact(
+            @PathVariable String id
+    ) {
+        try {
+            contactService.deleteContactById(id);
+            return ResponseEntity.ok().body(
+                    Collections.singletonMap("message", "Contact deleted successfully")
+            );
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                    Collections.singletonMap("message", "Error: " + e.getMessage())
+            );
+        }
+    }
+
+    @GetMapping("/edit/{id}")
+    public String editContactForm(Model model, @PathVariable String id) {
+        var contact = contactService.getContactById(id);
+        ContactForm contactForm = new ContactForm();
+        contactForm.setContactName(contact.get().getContactName());
+        contactForm.setContactEmail(contact.get().getContactEmail());
+        contactForm.setContactPhone(contact.get().getContactPhone());
+        contactForm.setContactAddress(contact.get().getContactAddress());
+        contactForm.setDescription(contact.get().getDescription());
+        contactForm.setFavorite(contact.get().isFavorite());
+        contactForm.setContactPhoto(contact.get().getPicture());
+        if (contact.get().getLinks() != null && !contact.get().getLinks().isEmpty()) {
+            contactForm.setLinks(new ArrayList<>());
+            for (SocialHandles handle : contact.get().getLinks()) {
+                SocialHandles formHandle = new SocialHandles();
+                formHandle.setHandle(handle.getHandle());
+                formHandle.setHandleLink(handle.getHandleLink());
+                contactForm.getLinks().add(formHandle);
+            }
+        }
+        model.addAttribute("contactForm", contactForm);
+
+        return "user/editContactForm";
+    }
+
+    @PostMapping("/update/{id}")
+    public String updateContact(@PathVariable String id,@Valid @ModelAttribute ContactForm contactForm, HttpSession session,Authentication authentication , BindingResult bindingResult) {
+       if (bindingResult.hasErrors()) {
+           return "user/editContactForm";
+       }
+        var contact = new Contacts();
+        String username = UserHelper.getLoggedInUserEmail(authentication);
+        User user = userService.getUserByEmail(username);
+        contact.setUser(user);
+        contact.setId(id);
+        contact.setContactName(contactForm.getContactName());
+        contact.setContactEmail(contactForm.getContactEmail());
+        contact.setContactPhone(contactForm.getContactPhone());
+        contact.setContactAddress(contactForm.getContactAddress());
+        contact.setDescription(contactForm.getDescription());
+        contact.setFavorite(contactForm.isFavorite());
+        if (contactForm.getLinks() != null && !contactForm.getLinks().isEmpty()) {
+            for (SocialHandles handle : contactForm.getLinks()) {
+                handle.setContact(contact);
+            }
+            contact.getLinks().addAll(contactForm.getLinks());
+        }
+        if (contactForm.getPicture() != null && !contactForm.getPicture().isEmpty()) {
+            String fileName = UUID.randomUUID().toString();
+            String fileUrl = imageService.uploadImage(contactForm.getPicture(), fileName);
+            contact.setImagePublicId(fileName);
+            contact.setPicture(fileUrl);
+            contactForm.setContactPhoto(fileUrl);
+        }
+        contactService.update(contact);
+        Message message = Message.builder().content("Updation Successful").type(MessageType.green).build();
+        session.setAttribute("message", message);
+
+        return "redirect:/user/contact/edit/"+id;
     }
 
 }

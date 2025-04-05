@@ -11,14 +11,14 @@
   <body>
     <div id="content">
       <!-- Main Content Container -->
-      <div class="flex min-h-screen">
+      <div class="flex flex-col items-center min-h-screen">
         <!-- Sidebar -->
         <div th:if="${LoggedInUser}" class="w-64 fixed left top-10 h-full">
           <div data-th-replace="~{user/SideBar :: sidebar}"></div>
         </div>
 
         <!-- Main Content Area -->
-        <div class="flex-1 ml-64 p-8"> <!-- Adjust margin-left to match sidebar width -->
+        <div class="w-full pl-32 pt-6 pr-24"> <!-- Adjust margin-left to match sidebar width -->
           <h1 class="text-2xl font-bold mb-4">
             Welcome to Dashboard page
           </h1>

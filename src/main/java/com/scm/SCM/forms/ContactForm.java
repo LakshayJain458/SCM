@@ -35,6 +35,7 @@ public class ContactForm {
     private String ContactAddress;
 
     private MultipartFile picture;
+    private String ContactPhoto;
 
     private String description;
 
