@@ -22,6 +22,8 @@
       animation: fade-in-up 0.3s ease-out;
     }
   </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="//cdn.rawgit.com/rainabba/jquery-table2excel/1.1.0/dist/jquery.table2excel.min.js"></script>
 </head>
 
 <body>
@@ -41,6 +43,11 @@
         <div>
           <div class="relative overflow-x-auto shadow-md sm:rounded-lg bg-white dark:bg-gray-900 p-4">
             <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+              <button onclick="exportData()"
+                class="flex items-center gap-2 px-4 py-2.5 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-colors duration-200">
+                <i class="fas fa-file-excel"></i>
+                Export Excel
+              </button>
               <form data-th-object="${searchContactForm}" data-th-action="@{/user/contact/search}" class="w-full">
                 <div class="flex flex-col md:flex-row items-stretch gap-4 p-2 w-full">
                   <!-- Dropdown Field Selector -->
@@ -83,7 +90,7 @@
               </form>
             </div>
           </div>
-          <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+          <table id="contact-table" class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
             <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
               <tr>
                 <th scope="col" class="px-6 py-3">Name</th>
@@ -315,5 +322,15 @@
   </div>
 </body>
 <script data-th-src="@{'/js/contact.js'}"></script>
+<script>
+  function exportData() {
+    TableToExcel.convert(document.getElementById("contact-table"), {
+      name: "contacts.xlsx",
+      sheet: {
+        name: "Sheet 1",
+      },
+    });
+  }
+</script>
 
 </html>

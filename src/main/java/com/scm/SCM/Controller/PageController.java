@@ -44,6 +44,12 @@ public class PageController {
         return "login";
     }
 
+    @PostMapping("/clear-session-message")
+    @ResponseBody
+    public void clearSessionMessage(HttpSession session) {
+        session.removeAttribute("message");
+    }
+
     @GetMapping("/signup")
     public String signup(Model model) {
         model.addAttribute("userForm", new UserForm());
@@ -67,10 +73,11 @@ public class PageController {
         user.setEmail(userform.getEmail());
         user.setAbout(userform.getAbout());
         user.setPhoneNumber(userform.getPhoneNumber());
+        user.setEnabled(false);
 
         try {
             userService.save(user);
-            Message message = Message.builder().content("Registration Successful").type(MessageType.green).build();
+            Message message = Message.builder().content("Registration Successful , Now login!").type(MessageType.green).build();
             session.setAttribute("message", message);
         } catch (Exception e) {
             Message message = Message.builder().content("Registration Unsuccessful , Try Again !").type(MessageType.red).build();

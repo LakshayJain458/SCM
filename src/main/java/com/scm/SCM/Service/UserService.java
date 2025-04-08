@@ -1,6 +1,7 @@
 package com.scm.SCM.Service;
 
 import com.scm.SCM.helpers.AppConstants;
+import com.scm.SCM.helpers.UserHelper;
 import com.scm.SCM.model.User;
 import com.scm.SCM.repo.userRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class UserService {
@@ -19,9 +21,17 @@ public class UserService {
     @Autowired
     private userRepo userRepo;
 
+//    @Autowired
+//    private EmailService emailService;
+
     public void save(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRoleList(List.of(AppConstants.ROLE_USER));
+//        String emailToken = UUID.randomUUID().toString();
+//        user.setEmailToken(emailToken);
+//        User savedUser = userRepo.save(user);
+//        String emailLink = UserHelper.getLinkForEmailVerification(emailToken);
+//        emailService.sendEmail(savedUser.getEmail(), "Verify Account : Email from Smart Contact Manager", emailLink);
         userRepo.save(user);
     }
 
@@ -70,7 +80,7 @@ public class UserService {
     }
 
     public User getUserByEmail(String email) {
-         return userRepo.findByEmail(email).orElse(null);
+        return userRepo.findByEmail(email).orElse(null);
     }
 
 

@@ -48,7 +48,9 @@ public class User implements UserDetails {
     @Column(length = 1000)
     private String about;
 
-    private boolean enabled = true;
+    private boolean enabled = false;
+
+    private String emailToken;
 
     @Enumerated(EnumType.STRING)
     private Providers provider = Providers.SELF;

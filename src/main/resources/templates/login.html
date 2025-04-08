@@ -1,335 +1,203 @@
 <!DOCTYPE html>
-<html
-  lang="en"
-  th:replace="~{base :: parent(~{::#content},~{::title},~{::script})}"
->
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login Page</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
-      rel="stylesheet"
-    />
-    <style>
-      /* Custom CSS for smooth transitions */
-      .error-message {
-        opacity: 0;
-        transform: translateY(-10px);
-        transition: opacity 0.3s ease, transform 0.3s ease;
-      }
-      .error-message.show {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    </style>
-  </head>
-  <body id="content" class="bg-gray-50 dark:bg-gray-900">
-    <!-- Toast Message -->
-    <div class="flex justify-center mt-2">
-      <div class="w-full flex items-center justify-center">
-        <!-- Error Message Box -->
-        <div
-          th:if="${param.error}"
-          class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg shadow-md max-w-md w-full text-center transition-all duration-300 transform translate-y-4 opacity-0 relative"
-          th:classappend="${param.error} ? 'translate-y-0 opacity-100' : ''"
-        >
-          <!-- Error Icon -->
-          <svg
-            class="w-6 h-6 inline-block mr-2 text-red-500"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-            ></path>
+<html lang="en" th:replace="~{base :: parent(~{::#content},~{::title},~{::script})}">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login Page</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+  <style>
+    /* Custom CSS for smooth transitions */
+    .message-container {
+      opacity: 0;
+      transform: translateY(-20px);
+      transition: all 0.3s ease-in-out;
+    }
+
+    .message-container.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+
+<body id="content" class="bg-gray-50 dark:bg-gray-900">
+  <!-- Messages Container -->
+  <div class="flex justify-center mt-4">
+    <div class="w-full max-w-md px-4 space-y-4">
+      <!-- Session-based Message (Disabled User) -->
+      <div th:if="${session.message}"
+        class="message-container bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg shadow-md relative">
+        <div class="flex items-center">
+          <svg class="w-6 h-6 flex-shrink-0 mr-2 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-
-          <!-- Error Message Text -->
-          <span class="block sm:inline">Invalid username and password.</span>
-
-          <!-- Close (Cross) Icon -->
-          <button
-            class="absolute top-0 right-0 p-2 text-red-500 hover:text-red-700 focus:outline-none"
-            onclick="this.parentElement.style.opacity = '0'; setTimeout(() => this.parentElement.remove(), 300)"
-          >
-            <svg
-              class="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M6 18L18 6M6 6l12 12"
-              ></path>
-            </svg>
-          </button>
+          <span th:text="${session.message.content}">User is disabled message</span>
         </div>
-
-        <!-- Logout Message Box -->
-        <div
-          th:if="${param.logout}"
-          class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg shadow-md max-w-md w-full text-center transition-all duration-300 transform translate-y-4 opacity-0 relative"
-          th:classappend="${param.logout} ? 'translate-y-0 opacity-100' : ''"
-        >
-          <!-- Checkmark Icon -->
-          <svg
-            class="w-6 h-6 inline-block mr-2 text-green-500"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M5 13l4 4L19 7"
-            ></path>
+        <button class="absolute top-3 right-3 p-1 hover:text-red-800" onclick="dismissMessage(this)">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
+        </button>
+      </div>
 
-          <!-- Logout Message Text -->
-          <span class="block sm:inline">You have been logged out.</span>
-
-          <!-- Close (Cross) Icon -->
-          <button
-            class="absolute top-0 right-0 p-2 text-green-500 hover:text-green-700 focus:outline-none"
-            onclick="this.parentElement.style.opacity = '0'; setTimeout(() => this.parentElement.remove(), 300)"
-          >
-            <svg
-              class="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M6 18L18 6M6 6l12 12"
-              ></path>
-            </svg>
-          </button>
+      <!-- URL Parameter Error Message -->
+      <div th:if="${param.error}"
+        class="message-container bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg shadow-md relative">
+        <div class="flex items-center">
+          <svg class="w-6 h-6 flex-shrink-0 mr-2 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span>Invalid username or password</span>
         </div>
+        <button class="absolute top-3 right-3 p-1 hover:text-red-800" onclick="dismissMessage(this)">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Logout Message -->
+      <div th:if="${param.logout}"
+        class="message-container bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg shadow-md relative">
+        <div class="flex items-center">
+          <svg class="w-6 h-6 flex-shrink-0 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>
+          <span>You have been logged out</span>
+        </div>
+        <button class="absolute top-3 right-3 p-1 hover:text-green-800" onclick="this.parentElement.remove()">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
       </div>
     </div>
+  </div>
 
-    <!-- Login Form -->
-    <div class="flex items-center justify-center min-h-screen mt-2">
-      <form
-        method="post"
-        data-th-action="@{'/authenticate'}"
-        novalidate
-        class="w-full max-w-md bg-white dark:bg-gray-800 shadow-lg rounded-lg px-8 pt-8 pb-8 mb-4"
-      >
-        <h2
-          class="text-2xl font-bold mb-8 text-gray-900 dark:text-white text-center"
-        >
-          Log in to Continue Your Journey
-        </h2>
+  <div class="min-h-screen flex flex-col items-center justify-center p-4">
+    <form method="post" data-th-action="@{'/authenticate'}" novalidate
+      class="w-full max-w-md bg-white dark:bg-gray-800 shadow-lg rounded-lg px-8 pt-8 pb-8 mb-4">
+      <h2 class="text-2xl font-bold mb-8 text-gray-900 dark:text-white text-center">
+        Log in to Continue Your Journey
+      </h2>
 
-        <!-- Email Field -->
-        <div class="mb-6">
-          <label
-            for="email"
-            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-            >Email Address</label
-          >
-          <div class="relative">
-            <div
-              class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"
-            >
-              <svg
-                class="w-5 h-5 text-gray-500 dark:text-gray-400"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor"
-                viewBox="0 0 20 16"
-              >
-                <path
-                  d="m10.036 8.278 9.258-7.79A1.979 1.979 0 0 0 18 0H2A1.987 1.987 0 0 0 .641.541l9.395 7.737Z"
-                />
-                <path
-                  d="M11.241 9.817c-.36.275-.801.425-1.255.427-.428 0-.845-.138-1.187-.395L0 2.6V14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2.5l-8.759 7.317Z"
-                />
-              </svg>
-            </div>
-            <input
-              type="email"
-              name="email"
-              id="email"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="name@example.com"
-              required
-            />
+      <!-- Email Field -->
+      <div class="mb-6">
+        <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email Address</label>
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+            <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 16">
+              <path d="m10.036 8.278 9.258-7.79A1.979 1.979 0 0 0 18 0H2A1.987 1.987 0 0 0 .641.541l9.395 7.737Z" />
+              <path
+                d="M11.241 9.817c-.36.275-.801.425-1.255.427-.428 0-.845-.138-1.187-.395L0 2.6V14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2.5l-8.759 7.317Z" />
+            </svg>
           </div>
-          <!-- <div
-            data-th-if="${#fields.hasErrors('email')}"
-            class="error-message flex items-center mt-1 text-red-500 transition-all duration-300"
-          >
-            <svg
-              class="w-4 h-4 mr-1 flex-shrink-0"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path
-                d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 11.793a1 1 0 1 1-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 0 1-1.414-1.414L8.586 10 6.293 7.707a1 1 0 0 1 1.414-1.414L10 8.586l2.293-2.293a1 1 0 0 1 1.414 1.414L11.414 10l2.293 2.293Z"
-              />
-            </svg>
-            <span data-th-errors="*{email}" class="text-sm"></span>
-          </div> -->
+          <input type="email" name="email" id="email"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            placeholder="name@example.com" required />
         </div>
+      </div>
 
-        <!-- Password Field -->
-        <div class="mb-6">
-          <label
-            for="password"
-            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-            >Password</label
-          >
-          <div class="relative">
-            <div
-              class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"
-            >
-              <svg
-                class="w-5 h-5 text-gray-500 dark:text-gray-400"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  fill-rule="evenodd"
-                  d="M10 1a4.5 4.5 0 0 0-4.5 4.5V9H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2h-.5V5.5A4.5 4.5 0 0 0 10 1Zm3 8V5.5a3 3 0 1 0-6 0V9h6Z"
-                  clip-rule="evenodd"
-                />
-              </svg>
-            </div>
-            <input
-              name="password"
-              type="password"
-              id="password"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="Enter your password"
-              required
-            />
+      <!-- Password Field -->
+      <div class="mb-6">
+        <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Password</label>
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+            <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd"
+                d="M10 1a4.5 4.5 0 0 0-4.5 4.5V9H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2h-.5V5.5A4.5 4.5 0 0 0 10 1Zm3 8V5.5a3 3 0 1 0-6 0V9h6Z" />
+            </svg>
           </div>
-          <!-- <div
-            data-th-if="${#fields.hasErrors('password')}"
-            class="error-message flex items-center mt-1 text-red-500 transition-all duration-300"
-          >
-            <svg
-              class="w-4 h-4 mr-1 flex-shrink-0"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path
-                d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 11.793a1 1 0 1 1-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 0 1-1.414-1.414L8.586 10 6.293 7.707a1 1 0 0 1 1.414-1.414L10 8.586l2.293-2.293a1 1 0 0 1 1.414 1.414L11.414 10l2.293 2.293Z"
-              />
-            </svg>
-            <span data-th-errors="*{password}" class="text-sm"></span>
-          </div> -->
+          <input name="password" type="password" id="password"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            placeholder="Enter your password" required />
         </div>
+      </div>
 
-        <!-- Submit Button -->
-        <div class="mb-6">
-          <button
-            type="submit"
-            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-5 rounded-lg focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 transition-all duration-300"
-          >
-            Log In
-          </button>
-        </div>
+      <!-- Submit Button -->
+      <button type="submit"
+        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-5 rounded-lg focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 transition-all duration-300 mb-6">
+        Log In
+      </button>
 
-        <!-- Divider -->
-        <div class="flex items-center mb-6">
-          <div
-            class="flex-1 border-t border-gray-300 dark:border-gray-600"
-          ></div>
-          <span class="mx-4 text-gray-500 dark:text-gray-400">OR</span>
-          <div
-            class="flex-1 border-t border-gray-300 dark:border-gray-600"
-          ></div>
-        </div>
+      <!-- Divider -->
+      <div class="flex items-center mb-6">
+        <div class="flex-1 border-t border-gray-300 dark:border-gray-600"></div>
+        <span class="mx-4 text-gray-500 dark:text-gray-400">OR</span>
+        <div class="flex-1 border-t border-gray-300 dark:border-gray-600"></div>
+      </div>
 
-        <!-- Google Login Button -->
-        <div class="mb-4">
-          <button
-            type="button"
-            onclick="window.location.href = '/oauth2/authorization/google'"
-            class="w-full flex items-center justify-center bg-red-600 hover:bg-red-500 text-white font-medium py-2.5 px-5 rounded-lg focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800 transition-all duration-300"
-          >
-            <img
-              th:src="@{/images/google.png}"
-              alt="Google Icon"
-              class="w-5 h-5 mr-2"
-            />
-            Log In with Google
-          </button>
-        </div>
+      <!-- Social Login Buttons -->
+      <div class="space-y-4">
+        <button type="button" onclick="window.location.href = '/oauth2/authorization/google'"
+          class="w-full flex items-center justify-center bg-red-600 hover:bg-red-500 text-white font-medium py-2.5 px-5 rounded-lg focus:outline-none focus:ring-4 focus:ring-red-300 transition-all duration-300">
+          <img th:src="@{/images/google.png}" alt="Google" class="w-5 h-5 mr-2" />
+          Continue with Google
+        </button>
 
-        <!-- GitHub Login Button -->
-        <div class="mb-6">
-          <button
-            type="button"
-            onclick="window.location.href = '/oauth2/authorization/github'"
-            class="w-full flex items-center justify-center bg-gray-900 hover:bg-gray-800 text-white font-medium py-2.5 px-5 rounded-lg focus:outline-none focus:ring-4 focus:ring-gray-300 dark:bg-gray-700 dark:hover:bg-gray-900 dark:focus:ring-gray-800 transition-all duration-300"
-          >
-            <svg
-              class="w-5 h-5 mr-2"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M10 .333A9.911 9.911 0 0 0 6.866 19.65c.5.092.678-.215.678-.477 0-.237-.01-1.017-.014-1.845-2.757.6-3.338-1.169-3.338-1.169a2.627 2.627 0 0 0-1.1-1.451c-.9-.615.07-.6.07-.6a2.084 2.084 0 0 1 1.518 1.021 2.11 2.11 0 0 0 2.884.823c.044-.503.268-.973.63-1.325-2.2-.25-4.516-1.1-4.516-4.937A3.832 3.832 0 0 1 4.7 7.068a3.56 3.56 0 0 1 .095-2.623s.832-.266 2.726 1.016a9.409 9.409 0 0 1 4.962 0c1.89-1.282 2.717-1.016 2.717-1.016.366.83.402 1.768.1 2.623a3.827 3.827 0 0 1 1.02 2.659c0 3.848-2.32 4.695-4.542 4.942.359.307.678.915.678 1.846 0 1.335-.012 2.415-.012 2.741 0 .263.18.572.681.475A9.911 9.911 0 0 0 10 .333Z"
-                clip-rule="evenodd"
-              />
-            </svg>
-            Log In with GitHub
-          </button>
-        </div>
+        <button type="button" onclick="window.location.href = '/oauth2/authorization/github'"
+          class="w-full flex items-center justify-center bg-gray-900 hover:bg-gray-800 text-white font-medium py-2.5 px-5 rounded-lg focus:outline-none focus:ring-4 focus:ring-gray-300 transition-all duration-300">
+          <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd"
+              d="M10 .333A9.911 9.911 0 0 0 6.866 19.65c.5.092.678-.215.678-.477 0-.237-.01-1.017-.014-1.845-2.757.6-3.338-1.169-3.338-1.169a2.627 2.627 0 0 0-1.1-1.451c-.9-.615.07-.6.07-.6a2.084 2.084 0 0 1 1.518 1.021 2.11 2.11 0 0 0 2.884.823c.044-.503.268-.973.63-1.325-2.2-.25-4.516-1.1-4.516-4.937A3.832 3.832 0 0 1 4.7 7.068a3.56 3.56 0 0 1 .095-2.623s.832-.266 2.726 1.016a9.409 9.409 0 0 1 4.962 0c1.89-1.282 2.717-1.016 2.717-1.016.366.83.402 1.768.1 2.623a3.827 3.827 0 0 1 1.02 2.659c0 3.848-2.32 4.695-4.542 4.942.359.307.678.915.678 1.846 0 1.335-.012 2.415-.012 2.741 0 .263.18.572.681.475A9.911 9.911 0 0 0 10 .333Z" />
+          </svg>
+          Continue with GitHub
+        </button>
+      </div>
 
-        <!-- Already have an account? Sign Up -->
-        <div class="text-center">
-          <p class="text-sm text-gray-600 dark:text-gray-400">
-            Don't have an account?
-            <a
-              href="/signup"
-              class="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-500 font-medium"
-              >Sign Up</a
-            >
-          </p>
-        </div>
-      </form>
-    </div>
+      <!-- Signup Link -->
+      <div class="text-center mt-6">
+        <p class="text-sm text-gray-600 dark:text-gray-400">
+          Don't have an account?
+          <a href="/signup"
+            class="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-500 font-medium">
+            Sign Up
+          </a>
+        </p>
+      </div>
+    </form>
+  </div>
 
-    <!-- Script to handle error message transitions -->
-    <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        const errorMessages = document.querySelectorAll(".error-message");
-        errorMessages.forEach((error) => {
-          if (error.textContent.trim() !== "") {
-            error.classList.add("show");
-          }
-        });
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // Activate all messages
+      document.querySelectorAll('.message-container').forEach(message => {
+        message.classList.add('active');
+
+        // Auto-dismiss after 5 seconds
+        setTimeout(() => {
+          animateDismiss(message);
+        }, 5000);
       });
-    </script>
-  </body>
+
+      // Clear session message if present
+      const sessionMessage = document.querySelector('[th\\:if="${session.message}"]');
+      if (sessionMessage) {
+        // Remove session attribute after display
+        setTimeout(() => {
+          fetch('/clear-session-message', { method: 'POST' });
+        }, 5000);
+      }
+    });
+
+    function dismissMessage(button) {
+      const message = button.closest('.message-container');
+      animateDismiss(message);
+
+      // If it's a session message, clear it immediately
+      if (message.hasAttribute('th:if="${session.message}"')) {
+        fetch('/clear-session-message', { method: 'POST' });
+      }
+    }
+
+    function animateDismiss(element) {
+      element.style.opacity = '0';
+      setTimeout(() => element.remove(), 300);
+    }
+  </script>
+</body>
+
 </html>

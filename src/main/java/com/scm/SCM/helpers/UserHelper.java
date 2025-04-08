@@ -27,4 +27,8 @@ public class UserHelper {
             return authentication.getName();
         }
     }
+
+    public static String getLinkForEmailVerification(String emailToken) {
+        return "http://localhost:8080/auth/verify-email?token=" + emailToken;
+    }
 }

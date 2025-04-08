@@ -154,16 +154,16 @@ public class ContactsController {
     public String editContactForm(Model model, @PathVariable String id) {
         var contact = contactService.getContactById(id);
         ContactForm contactForm = new ContactForm();
-        contactForm.setContactName(contact.get().getContactName());
-        contactForm.setContactEmail(contact.get().getContactEmail());
-        contactForm.setContactPhone(contact.get().getContactPhone());
-        contactForm.setContactAddress(contact.get().getContactAddress());
-        contactForm.setDescription(contact.get().getDescription());
-        contactForm.setFavorite(contact.get().isFavorite());
-        contactForm.setContactPhoto(contact.get().getPicture());
-        if (contact.get().getLinks() != null && !contact.get().getLinks().isEmpty()) {
+        contactForm.setContactName(contact.getContactName());
+        contactForm.setContactEmail(contact.getContactEmail());
+        contactForm.setContactPhone(contact.getContactPhone());
+        contactForm.setContactAddress(contact.getContactAddress());
+        contactForm.setDescription(contact.getDescription());
+        contactForm.setFavorite(contact.isFavorite());
+        contactForm.setContactPhoto(contact.getPicture());
+        if (contact.getLinks() != null && !contact.getLinks().isEmpty()) {
             contactForm.setLinks(new ArrayList<>());
-            for (SocialHandles handle : contact.get().getLinks()) {
+            for (SocialHandles handle : contact.getLinks()) {
                 SocialHandles formHandle = new SocialHandles();
                 formHandle.setHandle(handle.getHandle());
                 formHandle.setHandleLink(handle.getHandleLink());
@@ -176,14 +176,11 @@ public class ContactsController {
     }
 
     @PostMapping("/update/{id}")
-    public String updateContact(@PathVariable String id,@Valid @ModelAttribute ContactForm contactForm, HttpSession session,Authentication authentication , BindingResult bindingResult) {
+    public String updateContact(@PathVariable String id,@Valid @ModelAttribute ContactForm contactForm, HttpSession session , BindingResult bindingResult) {
        if (bindingResult.hasErrors()) {
            return "user/editContactForm";
        }
-        var contact = new Contacts();
-        String username = UserHelper.getLoggedInUserEmail(authentication);
-        User user = userService.getUserByEmail(username);
-        contact.setUser(user);
+        var contact = contactService.getContactById(id);
         contact.setId(id);
         contact.setContactName(contactForm.getContactName());
         contact.setContactEmail(contactForm.getContactEmail());

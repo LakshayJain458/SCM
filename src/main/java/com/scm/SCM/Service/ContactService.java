@@ -55,16 +55,16 @@ public class ContactService {
         return contactRepo.findAll();
     }
 
-    public Optional<Contacts> getContactById(String id) {
-        return contactRepo.findById(id);
+    public Contacts getContactById(String id) {
+        return contactRepo.findById(id).orElseThrow(() -> new RuntimeException("Contact not found"));
     }
 
     public void deleteContactById(String id) {
         contactRepo.deleteById(id);
     }
 
-    public void getByUserId(String userId) {
-        contactRepo.findByUserId(userId);
+    public List<Contacts> getByUserId(String userId) {
+        return  contactRepo.findByUserId(userId);
     }
 
     public Page<Contacts> getByUser(User user, int page, int size, String sortBy, String sortDirection) {

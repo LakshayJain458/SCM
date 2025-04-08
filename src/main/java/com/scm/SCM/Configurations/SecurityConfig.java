@@ -40,6 +40,9 @@ public class SecurityConfig {
     @Autowired
     private OAuthAuthenticationSuccessHandler handler;
 
+//    @Autowired
+//    private authFailureHandler failureHandler;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
@@ -55,8 +58,10 @@ public class SecurityConfig {
                 .loginPage("/login")
                 .loginProcessingUrl("/authenticate")
                 .defaultSuccessUrl("/user/profile")
+                .failureUrl("/login?error")
                 .usernameParameter("email")
                 .passwordParameter("password")
+//                .failureHandler(failureHandler)
         );
 
         http.csrf(AbstractHttpConfigurer::disable);

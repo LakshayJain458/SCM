@@ -9,13 +9,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface ContactRepo extends JpaRepository<Contacts, String> {
 
     Page<Contacts> findByUser(User user, Pageable pageable);
 
     @Query("SELECT c from Contacts c where c.user.userId = :userId")
-    void findByUserId(@Param("userId") String userId);
+    List<Contacts> findByUserId(@Param("userId") String userId);
 
     Page<Contacts> findByUserAndContactNameContaining(User user, String contactName, Pageable pageable);
 
