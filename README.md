@@ -72,6 +72,7 @@ Open [http://localhost:8080](http://localhost:8080) in your browser.
 
 ## 🧩 Folder Structure
 
+```text
 SCM/
 ├── src/
 │   └── main/
@@ -84,14 +85,13 @@ SCM/
 │       │   ├── model/              # Entity classes like User, Contact, Role
 │       │   ├── repo/               # Spring Data JPA repositories
 │       │   └── ScmApplication.java # Main Spring Boot application file
-│       │
+│
 │       └── resources/
-│           ├── templates/          # Thymeleaf HTML templates
-│           ├── static/             # Tailwind CSS, Flowbite, custom JS & CSS
+│           ├── templates/              # Thymeleaf HTML templates
+│           ├── static/                 # Tailwind CSS, Flowbite, custom JS & CSS
 │           └── application.properties  # App configuration (DB, Cloudinary, Mail, etc.)
+```
 
-
----
 
 ## 💡 Bonus Ideas for the Future
 - 📱 Mobile version with React Native  
